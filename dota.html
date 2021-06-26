@@ -15238,8 +15238,58 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">match_df</span><span class="p">,</span> <span class="n">first_blood_df</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;match_id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">roshan_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;match_id&quot;</span><span class="p">)</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;first_blood_team&quot;</span><span class="p">,</span> <span class="s2">&quot;roshan_team&quot;</span><span class="p">,</span> <span class="s2">&quot;radiant_win&quot;</span><span class="p">]]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tower_df</span> <span class="o">=</span> <span class="n">objectives_df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;subtype == &#39;CHAT_MESSAGE_TOWER_KILL&#39;&quot;</span><span class="p">)</span>
+<span class="n">tower_df</span><span class="p">[</span><span class="s2">&quot;tower_team&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tower_df</span><span class="p">[</span><span class="s2">&quot;player1&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">tower_df</span> <span class="o">=</span> <span class="n">tower_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;match_id&quot;</span><span class="p">,</span> <span class="s2">&quot;tower_team&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;tower_count&#39;</span><span class="p">)</span>
+<span class="n">tower_df</span><span class="p">[</span><span class="s2">&quot;tower_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tower_df</span><span class="p">[</span><span class="s2">&quot;tower_team&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">tower_df</span><span class="p">[</span><span class="s2">&quot;tower_count&quot;</span><span class="p">],</span> <span class="n">tower_df</span><span class="p">[</span><span class="s2">&quot;tower_count&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">tower_df</span> <span class="o">=</span> <span class="n">tower_df</span><span class="p">[[</span><span class="s2">&quot;match_id&quot;</span><span class="p">,</span> <span class="s2">&quot;tower_count&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;match_id&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
+<pre>&lt;ipython-input-6-4e7ad6b554b2&gt;:2: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  tower_df[&#34;tower_team&#34;] = np.where(tower_df[&#34;player1&#34;] &lt; 5, 1, 0).astype(float)
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Destroying towers are considered one of the most important parts of the game so we will include it to our features.</p>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">match_df</span><span class="p">,</span> <span class="n">first_blood_df</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;match_id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">roshan_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;match_id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">tower_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;match_id&quot;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;first_blood_team&quot;</span><span class="p">,</span> <span class="s2">&quot;roshan_team&quot;</span><span class="p">,</span> <span class="s2">&quot;radiant_win&quot;</span><span class="p">,</span> <span class="s2">&quot;tower_count&quot;</span><span class="p">]]</span>
 <span class="n">df</span><span class="p">[</span><span class="s2">&quot;radiant_win&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;radiant_win&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 <span class="n">df</span>
 </pre></div>
@@ -15257,7 +15307,7 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 <div class="jp-OutputArea-child">
 
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[7]:</div>
 
 
 
@@ -15283,6 +15333,7 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
       <th>first_blood_team</th>
       <th>roshan_team</th>
       <th>radiant_win</th>
+      <th>tower_count</th>
     </tr>
   </thead>
   <tbody>
@@ -15291,33 +15342,39 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
       <td>1</td>
       <td>1.0</td>
       <td>1.0</td>
+      <td>8.0</td>
     </tr>
     <tr>
       <th>1</th>
       <td>1</td>
       <td>1.0</td>
       <td>0.0</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>2</th>
       <td>0</td>
       <td>1.0</td>
       <td>0.0</td>
+      <td>4.0</td>
     </tr>
     <tr>
       <th>3</th>
       <td>0</td>
       <td>1.0</td>
       <td>0.0</td>
+      <td>4.0</td>
     </tr>
     <tr>
       <th>4</th>
       <td>1</td>
       <td>1.0</td>
       <td>1.0</td>
+      <td>11.0</td>
     </tr>
     <tr>
       <th>...</th>
+      <td>...</td>
       <td>...</td>
       <td>...</td>
       <td>...</td>
@@ -15327,34 +15384,39 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
       <td>0</td>
       <td>1.0</td>
       <td>0.0</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>41673</th>
       <td>1</td>
       <td>1.0</td>
       <td>1.0</td>
+      <td>6.0</td>
     </tr>
     <tr>
       <th>41674</th>
       <td>1</td>
       <td>1.0</td>
       <td>1.0</td>
+      <td>12.0</td>
     </tr>
     <tr>
       <th>41675</th>
       <td>1</td>
       <td>1.0</td>
       <td>1.0</td>
+      <td>10.0</td>
     </tr>
     <tr>
       <th>41676</th>
       <td>0</td>
       <td>1.0</td>
       <td>0.0</td>
+      <td>-8.0</td>
     </tr>
   </tbody>
 </table>
-<p>41677 rows × 3 columns</p>
+<p>41677 rows × 4 columns</p>
 </div>
 </div>
 
@@ -15375,10 +15437,10 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="Machine-Learning">Machine Learning<a class="anchor-link" href="#Machine-Learning">&#182;</a></h1>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_train</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
@@ -15386,43 +15448,14 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 
 <span class="n">feature_columns</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">feature_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">numeric_column</span><span class="p">(</span><span class="s2">&quot;first_blood_team&quot;</span><span class="p">))</span>
-<span class="c1">#feature_columns.append(tf.feature_column.numeric_column(&quot;roshan_team&quot;))</span>
+<span class="n">feature_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">numeric_column</span><span class="p">(</span><span class="s2">&quot;roshan_team&quot;</span><span class="p">))</span>
+<span class="n">feature_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">numeric_column</span><span class="p">(</span><span class="s2">&quot;tower_count&quot;</span><span class="p">))</span>
 <span class="n">feature_layer</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">DenseFeatures</span><span class="p">(</span><span class="n">feature_columns</span><span class="p">)</span>
 </pre></div>
 
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[7]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>&lt;tf.Tensor: shape=(33342, 1), dtype=float32, numpy=
-array([[0.],
-       [1.],
-       [1.],
-       ...,
-       [1.],
-       [0.],
-       [1.]], dtype=float32)&gt;</pre>
-</div>
-
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -15434,12 +15467,13 @@ array([[0.],
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">epochs</span> <span class="o">=</span> <span class="mi">20</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">epochs</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">classification_threshold</span> <span class="o">=</span> <span class="mf">0.6</span>
 <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.001</span>
 <span class="c1">#features = df[[&quot;first_blood_team&quot;,&quot;roshan_team&quot;]].values.astype(float)</span>
 <span class="c1">#features = df[[&quot;first_blood_team&quot;]].values.astype(float)</span>
 <span class="c1">#labels = df[&quot;radiant_win&quot;].values.astype(float)</span>
@@ -15447,15 +15481,19 @@ array([[0.],
 <span class="c1">#features_train, features_test, labels_train, labels_test = train_test_split(features, labels, test_size = 0.3, random_state = 9)</span>
 
 <span class="n">METRICS</span> <span class="o">=</span> <span class="p">[</span>
-      <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">BinaryAccuracy</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">classification_threshold</span><span class="p">),</span>
-      <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">Precision</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;precision&#39;</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="n">classification_threshold</span><span class="p">),</span>
-      <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">Recall</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;recall&quot;</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="n">classification_threshold</span><span class="p">)</span>
+      <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">BinaryAccuracy</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">classification_threshold</span><span class="p">)</span><span class="c1">#,</span>
+      <span class="c1">#tf.keras.metrics.Precision(name=&#39;precision&#39;, thresholds=classification_threshold),</span>
+      <span class="c1">#tf.keras.metrics.Recall(name=&quot;recall&quot;, thresholds=classification_threshold)</span>
 <span class="p">]</span>
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">feature_layer</span><span class="p">)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Activation</span><span class="p">(</span><span class="n">activations</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">))</span>
-<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">),</span> <span class="n">loss</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">BinaryCrossentropy</span><span class="p">(),</span> <span class="n">metrics</span><span class="o">=</span><span class="n">METRICS</span><span class="p">)</span>
+<span class="c1">#model.add(layers.Activation(activations.sigmoid))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Hidden1&#39;</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Hidden2&#39;</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Output&#39;</span><span class="p">))</span>
+<span class="c1">#model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.01), loss=tf.keras.losses.BinaryCrossentropy(), metrics=METRICS)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">),</span> <span class="n">loss</span><span class="o">=</span><span class="s2">&quot;categorical_hinge&quot;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="n">METRICS</span><span class="p">)</span>
 
 <span class="n">features</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">df_train</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;radiant_win&quot;</span><span class="p">))</span>
@@ -15468,7 +15506,8 @@ array([[0.],
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Epoch&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Value&quot;</span><span class="p">)</span>
 
-<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="s2">&quot;precision&quot;</span><span class="p">,</span> <span class="s2">&quot;recall&quot;</span><span class="p">]:</span>
+<span class="c1">#for m in [&#39;accuracy&#39;, &quot;precision&quot;, &quot;recall&quot;]:</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]:</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">hist</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">label</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
 
@@ -15492,50 +15531,30 @@ array([[0.],
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Epoch 1/20
-WARNING:tensorflow:Layers in a Sequential model should only have a single input tensor, but we receive a &lt;class &#39;dict&#39;&gt; input: {&#39;first_blood_team&#39;: &lt;tf.Tensor &#39;ExpandDims:0&#39; shape=(None, 1) dtype=int32&gt;, &#39;roshan_team&#39;: &lt;tf.Tensor &#39;ExpandDims_1:0&#39; shape=(None, 1) dtype=float32&gt;}
+<pre>Epoch 1/10
+WARNING:tensorflow:Layers in a Sequential model should only have a single input tensor, but we receive a &lt;class &#39;dict&#39;&gt; input: {&#39;first_blood_team&#39;: &lt;tf.Tensor &#39;ExpandDims:0&#39; shape=(None, 1) dtype=int32&gt;, &#39;roshan_team&#39;: &lt;tf.Tensor &#39;ExpandDims_1:0&#39; shape=(None, 1) dtype=float32&gt;, &#39;tower_count&#39;: &lt;tf.Tensor &#39;ExpandDims_2:0&#39; shape=(None, 1) dtype=float32&gt;}
 Consider rewriting this model with the Functional API.
-WARNING:tensorflow:Layers in a Sequential model should only have a single input tensor, but we receive a &lt;class &#39;dict&#39;&gt; input: {&#39;first_blood_team&#39;: &lt;tf.Tensor &#39;ExpandDims:0&#39; shape=(None, 1) dtype=int32&gt;, &#39;roshan_team&#39;: &lt;tf.Tensor &#39;ExpandDims_1:0&#39; shape=(None, 1) dtype=float32&gt;}
+WARNING:tensorflow:Layers in a Sequential model should only have a single input tensor, but we receive a &lt;class &#39;dict&#39;&gt; input: {&#39;first_blood_team&#39;: &lt;tf.Tensor &#39;ExpandDims:0&#39; shape=(None, 1) dtype=int32&gt;, &#39;roshan_team&#39;: &lt;tf.Tensor &#39;ExpandDims_1:0&#39; shape=(None, 1) dtype=float32&gt;, &#39;tower_count&#39;: &lt;tf.Tensor &#39;ExpandDims_2:0&#39; shape=(None, 1) dtype=float32&gt;}
 Consider rewriting this model with the Functional API.
-2084/2084 [==============================] - 1s 416us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 2/20
-2084/2084 [==============================] - 1s 415us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 3/20
-2084/2084 [==============================] - 1s 424us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 4/20
-2084/2084 [==============================] - 1s 427us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 5/20
-2084/2084 [==============================] - 1s 414us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 6/20
-2084/2084 [==============================] - 1s 419us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 7/20
-2084/2084 [==============================] - 1s 414us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 8/20
-2084/2084 [==============================] - 1s 438us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 9/20
-2084/2084 [==============================] - 1s 421us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 10/20
-2084/2084 [==============================] - 1s 436us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 11/20
-2084/2084 [==============================] - 1s 417us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 12/20
-2084/2084 [==============================] - 1s 421us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 13/20
-2084/2084 [==============================] - 1s 411us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 14/20
-2084/2084 [==============================] - 1s 413us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 15/20
-2084/2084 [==============================] - 1s 418us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 16/20
-2084/2084 [==============================] - 1s 421us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 17/20
-2084/2084 [==============================] - 1s 425us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 18/20
-2084/2084 [==============================] - 1s 442us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 19/20
-2084/2084 [==============================] - 1s 428us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
-Epoch 20/20
-2084/2084 [==============================] - 1s 417us/step - loss: 0.7274 - accuracy: 0.5462 - precision: 0.5501 - recall: 0.5343
+2084/2084 [==============================] - 1s 470us/step - loss: 0.1937 - accuracy: 0.9196
+Epoch 2/10
+2084/2084 [==============================] - 1s 475us/step - loss: 0.1530 - accuracy: 0.9267
+Epoch 3/10
+2084/2084 [==============================] - 1s 464us/step - loss: 0.1477 - accuracy: 0.9293
+Epoch 4/10
+2084/2084 [==============================] - 1s 462us/step - loss: 0.1466 - accuracy: 0.9289
+Epoch 5/10
+2084/2084 [==============================] - 1s 457us/step - loss: 0.1455 - accuracy: 0.9290
+Epoch 6/10
+2084/2084 [==============================] - 1s 459us/step - loss: 0.1445 - accuracy: 0.9296
+Epoch 7/10
+2084/2084 [==============================] - 1s 457us/step - loss: 0.1438 - accuracy: 0.9297
+Epoch 8/10
+2084/2084 [==============================] - 1s 461us/step - loss: 0.1433 - accuracy: 0.9297
+Epoch 9/10
+2084/2084 [==============================] - 1s 463us/step - loss: 0.1430 - accuracy: 0.9297
+Epoch 10/10
+2084/2084 [==============================] - 1s 475us/step - loss: 0.1427 - accuracy: 0.9297
 </pre>
 </div>
 </div>
@@ -15543,13 +15562,13 @@ Epoch 20/20
 <div class="jp-OutputArea-child">
 
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[9]:</div>
 
 
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>&lt;matplotlib.legend.Legend at 0x2b903195cd0&gt;</pre>
+<pre>&lt;matplotlib.legend.Legend at 0x13c0da12b80&gt;</pre>
 </div>
 
 </div>
@@ -15566,12 +15585,12 @@ Epoch 20/20
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <!-- Created with matplotlib (https://matplotlib.org/) -->
-<svg height="262.19625pt" version="1.1" viewBox="0 0 398.50625 262.19625" width="398.50625pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg height="262.19625pt" version="1.1" viewBox="0 0 404.86875 262.19625" width="404.86875pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
  <metadata>
   <rdf:RDF xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2021-06-25T21:25:23.182893</dc:date>
+    <dc:date>2021-06-26T17:06:58.235938</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -15587,18 +15606,18 @@ Epoch 20/20
  <g id="figure_1">
   <g id="patch_1">
    <path d="M 0 262.19625 
-L 398.50625 262.19625 
-L 398.50625 0 
+L 404.86875 262.19625 
+L 404.86875 0 
 L 0 0 
 z
 " style="fill:none;"/>
   </g>
   <g id="axes_1">
    <g id="patch_2">
-    <path d="M 56.50625 224.64 
-L 391.30625 224.64 
-L 391.30625 7.2 
-L 56.50625 7.2 
+    <path d="M 62.86875 224.64 
+L 397.66875 224.64 
+L 397.66875 7.2 
+L 62.86875 7.2 
 z
 " style="fill:#ffffff;"/>
    </g>
@@ -15608,15 +15627,43 @@ z
       <defs>
        <path d="M 0 0 
 L 0 3.5 
-" id="m4cd69d434b" style="stroke:#000000;stroke-width:0.8;"/>
+" id="m435f97a0cc" style="stroke:#000000;stroke-width:0.8;"/>
       </defs>
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="97.088068" xlink:href="#m4cd69d434b" y="224.64"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="78.086932" xlink:href="#m435f97a0cc" y="224.64"/>
       </g>
      </g>
      <g id="text_1">
-      <!-- 2.5 -->
-      <g transform="translate(89.136506 239.238437)scale(0.1 -0.1)">
+      <!-- 1 -->
+      <g transform="translate(74.905682 239.238437)scale(0.1 -0.1)">
+       <defs>
+        <path d="M 12.40625 8.296875 
+L 28.515625 8.296875 
+L 28.515625 63.921875 
+L 10.984375 60.40625 
+L 10.984375 69.390625 
+L 28.421875 72.90625 
+L 38.28125 72.90625 
+L 38.28125 8.296875 
+L 54.390625 8.296875 
+L 54.390625 0 
+L 12.40625 0 
+z
+" id="DejaVuSans-49"/>
+       </defs>
+       <use xlink:href="#DejaVuSans-49"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use style="stroke:#000000;stroke-width:0.8;" x="116.132386" xlink:href="#m435f97a0cc" y="224.64"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <!-- 2 -->
+      <g transform="translate(112.951136 239.238437)scale(0.1 -0.1)">
        <defs>
         <path d="M 19.1875 8.296875 
 L 53.609375 8.296875 
@@ -15642,12 +15689,100 @@ Q 44.1875 33.984375 37.640625 27.21875
 Q 31.109375 20.453125 19.1875 8.296875 
 z
 " id="DejaVuSans-50"/>
-        <path d="M 10.6875 12.40625 
-L 21 12.40625 
-L 21 0 
-L 10.6875 0 
+       </defs>
+       <use xlink:href="#DejaVuSans-50"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3">
+      <g>
+       <use style="stroke:#000000;stroke-width:0.8;" x="154.177841" xlink:href="#m435f97a0cc" y="224.64"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <!-- 3 -->
+      <g transform="translate(150.996591 239.238437)scale(0.1 -0.1)">
+       <defs>
+        <path d="M 40.578125 39.3125 
+Q 47.65625 37.796875 51.625 33 
+Q 55.609375 28.21875 55.609375 21.1875 
+Q 55.609375 10.40625 48.1875 4.484375 
+Q 40.765625 -1.421875 27.09375 -1.421875 
+Q 22.515625 -1.421875 17.65625 -0.515625 
+Q 12.796875 0.390625 7.625 2.203125 
+L 7.625 11.71875 
+Q 11.71875 9.328125 16.59375 8.109375 
+Q 21.484375 6.890625 26.8125 6.890625 
+Q 36.078125 6.890625 40.9375 10.546875 
+Q 45.796875 14.203125 45.796875 21.1875 
+Q 45.796875 27.640625 41.28125 31.265625 
+Q 36.765625 34.90625 28.71875 34.90625 
+L 20.21875 34.90625 
+L 20.21875 43.015625 
+L 29.109375 43.015625 
+Q 36.375 43.015625 40.234375 45.921875 
+Q 44.09375 48.828125 44.09375 54.296875 
+Q 44.09375 59.90625 40.109375 62.90625 
+Q 36.140625 65.921875 28.71875 65.921875 
+Q 24.65625 65.921875 20.015625 65.03125 
+Q 15.375 64.15625 9.8125 62.3125 
+L 9.8125 71.09375 
+Q 15.4375 72.65625 20.34375 73.4375 
+Q 25.25 74.21875 29.59375 74.21875 
+Q 40.828125 74.21875 47.359375 69.109375 
+Q 53.90625 64.015625 53.90625 55.328125 
+Q 53.90625 49.265625 50.4375 45.09375 
+Q 46.96875 40.921875 40.578125 39.3125 
 z
-" id="DejaVuSans-46"/>
+" id="DejaVuSans-51"/>
+       </defs>
+       <use xlink:href="#DejaVuSans-51"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_4">
+      <g>
+       <use style="stroke:#000000;stroke-width:0.8;" x="192.223295" xlink:href="#m435f97a0cc" y="224.64"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <!-- 4 -->
+      <g transform="translate(189.042045 239.238437)scale(0.1 -0.1)">
+       <defs>
+        <path d="M 37.796875 64.3125 
+L 12.890625 25.390625 
+L 37.796875 25.390625 
+z
+M 35.203125 72.90625 
+L 47.609375 72.90625 
+L 47.609375 25.390625 
+L 58.015625 25.390625 
+L 58.015625 17.1875 
+L 47.609375 17.1875 
+L 47.609375 0 
+L 37.796875 0 
+L 37.796875 17.1875 
+L 4.890625 17.1875 
+L 4.890625 26.703125 
+z
+" id="DejaVuSans-52"/>
+       </defs>
+       <use xlink:href="#DejaVuSans-52"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_5">
+      <g>
+       <use style="stroke:#000000;stroke-width:0.8;" x="230.26875" xlink:href="#m435f97a0cc" y="224.64"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <!-- 5 -->
+      <g transform="translate(227.0875 239.238437)scale(0.1 -0.1)">
+       <defs>
         <path d="M 10.796875 72.90625 
 L 49.515625 72.90625 
 L 49.515625 64.59375 
@@ -15673,59 +15808,64 @@ Q 14.890625 38.140625 10.796875 36.28125
 z
 " id="DejaVuSans-53"/>
        </defs>
-       <use xlink:href="#DejaVuSans-50"/>
-       <use x="63.623047" xlink:href="#DejaVuSans-46"/>
-       <use x="95.410156" xlink:href="#DejaVuSans-53"/>
-      </g>
-     </g>
-    </g>
-    <g id="xtick_2">
-     <g id="line2d_2">
-      <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="139.360795" xlink:href="#m4cd69d434b" y="224.64"/>
-      </g>
-     </g>
-     <g id="text_2">
-      <!-- 5.0 -->
-      <g transform="translate(131.409233 239.238437)scale(0.1 -0.1)">
-       <defs>
-        <path d="M 31.78125 66.40625 
-Q 24.171875 66.40625 20.328125 58.90625 
-Q 16.5 51.421875 16.5 36.375 
-Q 16.5 21.390625 20.328125 13.890625 
-Q 24.171875 6.390625 31.78125 6.390625 
-Q 39.453125 6.390625 43.28125 13.890625 
-Q 47.125 21.390625 47.125 36.375 
-Q 47.125 51.421875 43.28125 58.90625 
-Q 39.453125 66.40625 31.78125 66.40625 
-z
-M 31.78125 74.21875 
-Q 44.046875 74.21875 50.515625 64.515625 
-Q 56.984375 54.828125 56.984375 36.375 
-Q 56.984375 17.96875 50.515625 8.265625 
-Q 44.046875 -1.421875 31.78125 -1.421875 
-Q 19.53125 -1.421875 13.0625 8.265625 
-Q 6.59375 17.96875 6.59375 36.375 
-Q 6.59375 54.828125 13.0625 64.515625 
-Q 19.53125 74.21875 31.78125 74.21875 
-z
-" id="DejaVuSans-48"/>
-       </defs>
        <use xlink:href="#DejaVuSans-53"/>
-       <use x="63.623047" xlink:href="#DejaVuSans-46"/>
-       <use x="95.410156" xlink:href="#DejaVuSans-48"/>
       </g>
      </g>
     </g>
-    <g id="xtick_3">
-     <g id="line2d_3">
+    <g id="xtick_6">
+     <g id="line2d_6">
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="181.633523" xlink:href="#m4cd69d434b" y="224.64"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="268.314205" xlink:href="#m435f97a0cc" y="224.64"/>
       </g>
      </g>
-     <g id="text_3">
-      <!-- 7.5 -->
-      <g transform="translate(173.68196 239.238437)scale(0.1 -0.1)">
+     <g id="text_6">
+      <!-- 6 -->
+      <g transform="translate(265.132955 239.238437)scale(0.1 -0.1)">
+       <defs>
+        <path d="M 33.015625 40.375 
+Q 26.375 40.375 22.484375 35.828125 
+Q 18.609375 31.296875 18.609375 23.390625 
+Q 18.609375 15.53125 22.484375 10.953125 
+Q 26.375 6.390625 33.015625 6.390625 
+Q 39.65625 6.390625 43.53125 10.953125 
+Q 47.40625 15.53125 47.40625 23.390625 
+Q 47.40625 31.296875 43.53125 35.828125 
+Q 39.65625 40.375 33.015625 40.375 
+z
+M 52.59375 71.296875 
+L 52.59375 62.3125 
+Q 48.875 64.0625 45.09375 64.984375 
+Q 41.3125 65.921875 37.59375 65.921875 
+Q 27.828125 65.921875 22.671875 59.328125 
+Q 17.53125 52.734375 16.796875 39.40625 
+Q 19.671875 43.65625 24.015625 45.921875 
+Q 28.375 48.1875 33.59375 48.1875 
+Q 44.578125 48.1875 50.953125 41.515625 
+Q 57.328125 34.859375 57.328125 23.390625 
+Q 57.328125 12.15625 50.6875 5.359375 
+Q 44.046875 -1.421875 33.015625 -1.421875 
+Q 20.359375 -1.421875 13.671875 8.265625 
+Q 6.984375 17.96875 6.984375 36.375 
+Q 6.984375 53.65625 15.1875 63.9375 
+Q 23.390625 74.21875 37.203125 74.21875 
+Q 40.921875 74.21875 44.703125 73.484375 
+Q 48.484375 72.75 52.59375 71.296875 
+z
+" id="DejaVuSans-54"/>
+       </defs>
+       <use xlink:href="#DejaVuSans-54"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_7">
+     <g id="line2d_7">
+      <g>
+       <use style="stroke:#000000;stroke-width:0.8;" x="306.359659" xlink:href="#m435f97a0cc" y="224.64"/>
+      </g>
+     </g>
+     <g id="text_7">
+      <!-- 7 -->
+      <g transform="translate(303.178409 239.238437)scale(0.1 -0.1)">
        <defs>
         <path d="M 8.203125 72.90625 
 L 55.078125 72.90625 
@@ -15738,93 +15878,111 @@ z
 " id="DejaVuSans-55"/>
        </defs>
        <use xlink:href="#DejaVuSans-55"/>
-       <use x="63.623047" xlink:href="#DejaVuSans-46"/>
-       <use x="95.410156" xlink:href="#DejaVuSans-53"/>
       </g>
      </g>
     </g>
-    <g id="xtick_4">
-     <g id="line2d_4">
+    <g id="xtick_8">
+     <g id="line2d_8">
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="223.90625" xlink:href="#m4cd69d434b" y="224.64"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="344.405114" xlink:href="#m435f97a0cc" y="224.64"/>
       </g>
      </g>
-     <g id="text_4">
-      <!-- 10.0 -->
-      <g transform="translate(212.773438 239.238437)scale(0.1 -0.1)">
+     <g id="text_8">
+      <!-- 8 -->
+      <g transform="translate(341.223864 239.238437)scale(0.1 -0.1)">
        <defs>
-        <path d="M 12.40625 8.296875 
-L 28.515625 8.296875 
-L 28.515625 63.921875 
-L 10.984375 60.40625 
-L 10.984375 69.390625 
-L 28.421875 72.90625 
-L 38.28125 72.90625 
-L 38.28125 8.296875 
-L 54.390625 8.296875 
-L 54.390625 0 
-L 12.40625 0 
+        <path d="M 31.78125 34.625 
+Q 24.75 34.625 20.71875 30.859375 
+Q 16.703125 27.09375 16.703125 20.515625 
+Q 16.703125 13.921875 20.71875 10.15625 
+Q 24.75 6.390625 31.78125 6.390625 
+Q 38.8125 6.390625 42.859375 10.171875 
+Q 46.921875 13.96875 46.921875 20.515625 
+Q 46.921875 27.09375 42.890625 30.859375 
+Q 38.875 34.625 31.78125 34.625 
 z
-" id="DejaVuSans-49"/>
+M 21.921875 38.8125 
+Q 15.578125 40.375 12.03125 44.71875 
+Q 8.5 49.078125 8.5 55.328125 
+Q 8.5 64.0625 14.71875 69.140625 
+Q 20.953125 74.21875 31.78125 74.21875 
+Q 42.671875 74.21875 48.875 69.140625 
+Q 55.078125 64.0625 55.078125 55.328125 
+Q 55.078125 49.078125 51.53125 44.71875 
+Q 48 40.375 41.703125 38.8125 
+Q 48.828125 37.15625 52.796875 32.3125 
+Q 56.78125 27.484375 56.78125 20.515625 
+Q 56.78125 9.90625 50.3125 4.234375 
+Q 43.84375 -1.421875 31.78125 -1.421875 
+Q 19.734375 -1.421875 13.25 4.234375 
+Q 6.78125 9.90625 6.78125 20.515625 
+Q 6.78125 27.484375 10.78125 32.3125 
+Q 14.796875 37.15625 21.921875 38.8125 
+z
+M 18.3125 54.390625 
+Q 18.3125 48.734375 21.84375 45.5625 
+Q 25.390625 42.390625 31.78125 42.390625 
+Q 38.140625 42.390625 41.71875 45.5625 
+Q 45.3125 48.734375 45.3125 54.390625 
+Q 45.3125 60.0625 41.71875 63.234375 
+Q 38.140625 66.40625 31.78125 66.40625 
+Q 25.390625 66.40625 21.84375 63.234375 
+Q 18.3125 60.0625 18.3125 54.390625 
+z
+" id="DejaVuSans-56"/>
        </defs>
-       <use xlink:href="#DejaVuSans-49"/>
-       <use x="63.623047" xlink:href="#DejaVuSans-48"/>
-       <use x="127.246094" xlink:href="#DejaVuSans-46"/>
-       <use x="159.033203" xlink:href="#DejaVuSans-48"/>
+       <use xlink:href="#DejaVuSans-56"/>
       </g>
      </g>
     </g>
-    <g id="xtick_5">
-     <g id="line2d_5">
+    <g id="xtick_9">
+     <g id="line2d_9">
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="266.178977" xlink:href="#m4cd69d434b" y="224.64"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="382.450568" xlink:href="#m435f97a0cc" y="224.64"/>
       </g>
      </g>
-     <g id="text_5">
-      <!-- 12.5 -->
-      <g transform="translate(255.046165 239.238437)scale(0.1 -0.1)">
-       <use xlink:href="#DejaVuSans-49"/>
-       <use x="63.623047" xlink:href="#DejaVuSans-50"/>
-       <use x="127.246094" xlink:href="#DejaVuSans-46"/>
-       <use x="159.033203" xlink:href="#DejaVuSans-53"/>
-      </g>
-     </g>
-    </g>
-    <g id="xtick_6">
-     <g id="line2d_6">
-      <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="308.451705" xlink:href="#m4cd69d434b" y="224.64"/>
-      </g>
-     </g>
-     <g id="text_6">
-      <!-- 15.0 -->
-      <g transform="translate(297.318892 239.238437)scale(0.1 -0.1)">
-       <use xlink:href="#DejaVuSans-49"/>
-       <use x="63.623047" xlink:href="#DejaVuSans-53"/>
-       <use x="127.246094" xlink:href="#DejaVuSans-46"/>
-       <use x="159.033203" xlink:href="#DejaVuSans-48"/>
-      </g>
-     </g>
-    </g>
-    <g id="xtick_7">
-     <g id="line2d_7">
-      <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="350.724432" xlink:href="#m4cd69d434b" y="224.64"/>
-      </g>
-     </g>
-     <g id="text_7">
-      <!-- 17.5 -->
-      <g transform="translate(339.591619 239.238437)scale(0.1 -0.1)">
-       <use xlink:href="#DejaVuSans-49"/>
-       <use x="63.623047" xlink:href="#DejaVuSans-55"/>
-       <use x="127.246094" xlink:href="#DejaVuSans-46"/>
-       <use x="159.033203" xlink:href="#DejaVuSans-53"/>
+     <g id="text_9">
+      <!-- 9 -->
+      <g transform="translate(379.269318 239.238437)scale(0.1 -0.1)">
+       <defs>
+        <path d="M 10.984375 1.515625 
+L 10.984375 10.5 
+Q 14.703125 8.734375 18.5 7.8125 
+Q 22.3125 6.890625 25.984375 6.890625 
+Q 35.75 6.890625 40.890625 13.453125 
+Q 46.046875 20.015625 46.78125 33.40625 
+Q 43.953125 29.203125 39.59375 26.953125 
+Q 35.25 24.703125 29.984375 24.703125 
+Q 19.046875 24.703125 12.671875 31.3125 
+Q 6.296875 37.9375 6.296875 49.421875 
+Q 6.296875 60.640625 12.9375 67.421875 
+Q 19.578125 74.21875 30.609375 74.21875 
+Q 43.265625 74.21875 49.921875 64.515625 
+Q 56.59375 54.828125 56.59375 36.375 
+Q 56.59375 19.140625 48.40625 8.859375 
+Q 40.234375 -1.421875 26.421875 -1.421875 
+Q 22.703125 -1.421875 18.890625 -0.6875 
+Q 15.09375 0.046875 10.984375 1.515625 
+z
+M 30.609375 32.421875 
+Q 37.25 32.421875 41.125 36.953125 
+Q 45.015625 41.5 45.015625 49.421875 
+Q 45.015625 57.28125 41.125 61.84375 
+Q 37.25 66.40625 30.609375 66.40625 
+Q 23.96875 66.40625 20.09375 61.84375 
+Q 16.21875 57.28125 16.21875 49.421875 
+Q 16.21875 41.5 20.09375 36.953125 
+Q 23.96875 32.421875 30.609375 32.421875 
+z
+" id="DejaVuSans-57"/>
+       </defs>
+       <use xlink:href="#DejaVuSans-57"/>
       </g>
      </g>
     </g>
-    <g id="text_8">
+    <g id="text_10">
      <!-- Epoch -->
-     <g transform="translate(208.595313 252.916562)scale(0.1 -0.1)">
+     <g transform="translate(214.957812 252.916562)scale(0.1 -0.1)">
       <defs>
        <path d="M 9.8125 72.90625 
 L 55.90625 72.90625 
@@ -15938,288 +16096,148 @@ z
    </g>
    <g id="matplotlib.axis_2">
     <g id="ytick_1">
-     <g id="line2d_8">
+     <g id="line2d_10">
       <defs>
        <path d="M 0 0 
 L -3.5 0 
-" id="m870e52e0f1" style="stroke:#000000;stroke-width:0.8;"/>
+" id="m7944de6ff4" style="stroke:#000000;stroke-width:0.8;"/>
       </defs>
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="56.50625" xlink:href="#m870e52e0f1" y="219.028592"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="62.86875" xlink:href="#m7944de6ff4" y="196.896985"/>
       </g>
      </g>
-     <g id="text_9">
-      <!-- 0.534 -->
-      <g transform="translate(20.878125 222.82781)scale(0.1 -0.1)">
+     <g id="text_11">
+      <!-- 0.9270 -->
+      <g transform="translate(20.878125 200.696204)scale(0.1 -0.1)">
        <defs>
-        <path d="M 40.578125 39.3125 
-Q 47.65625 37.796875 51.625 33 
-Q 55.609375 28.21875 55.609375 21.1875 
-Q 55.609375 10.40625 48.1875 4.484375 
-Q 40.765625 -1.421875 27.09375 -1.421875 
-Q 22.515625 -1.421875 17.65625 -0.515625 
-Q 12.796875 0.390625 7.625 2.203125 
-L 7.625 11.71875 
-Q 11.71875 9.328125 16.59375 8.109375 
-Q 21.484375 6.890625 26.8125 6.890625 
-Q 36.078125 6.890625 40.9375 10.546875 
-Q 45.796875 14.203125 45.796875 21.1875 
-Q 45.796875 27.640625 41.28125 31.265625 
-Q 36.765625 34.90625 28.71875 34.90625 
-L 20.21875 34.90625 
-L 20.21875 43.015625 
-L 29.109375 43.015625 
-Q 36.375 43.015625 40.234375 45.921875 
-Q 44.09375 48.828125 44.09375 54.296875 
-Q 44.09375 59.90625 40.109375 62.90625 
-Q 36.140625 65.921875 28.71875 65.921875 
-Q 24.65625 65.921875 20.015625 65.03125 
-Q 15.375 64.15625 9.8125 62.3125 
-L 9.8125 71.09375 
-Q 15.4375 72.65625 20.34375 73.4375 
-Q 25.25 74.21875 29.59375 74.21875 
-Q 40.828125 74.21875 47.359375 69.109375 
-Q 53.90625 64.015625 53.90625 55.328125 
-Q 53.90625 49.265625 50.4375 45.09375 
-Q 46.96875 40.921875 40.578125 39.3125 
+        <path d="M 31.78125 66.40625 
+Q 24.171875 66.40625 20.328125 58.90625 
+Q 16.5 51.421875 16.5 36.375 
+Q 16.5 21.390625 20.328125 13.890625 
+Q 24.171875 6.390625 31.78125 6.390625 
+Q 39.453125 6.390625 43.28125 13.890625 
+Q 47.125 21.390625 47.125 36.375 
+Q 47.125 51.421875 43.28125 58.90625 
+Q 39.453125 66.40625 31.78125 66.40625 
 z
-" id="DejaVuSans-51"/>
-        <path d="M 37.796875 64.3125 
-L 12.890625 25.390625 
-L 37.796875 25.390625 
+M 31.78125 74.21875 
+Q 44.046875 74.21875 50.515625 64.515625 
+Q 56.984375 54.828125 56.984375 36.375 
+Q 56.984375 17.96875 50.515625 8.265625 
+Q 44.046875 -1.421875 31.78125 -1.421875 
+Q 19.53125 -1.421875 13.0625 8.265625 
+Q 6.59375 17.96875 6.59375 36.375 
+Q 6.59375 54.828125 13.0625 64.515625 
+Q 19.53125 74.21875 31.78125 74.21875 
 z
-M 35.203125 72.90625 
-L 47.609375 72.90625 
-L 47.609375 25.390625 
-L 58.015625 25.390625 
-L 58.015625 17.1875 
-L 47.609375 17.1875 
-L 47.609375 0 
-L 37.796875 0 
-L 37.796875 17.1875 
-L 4.890625 17.1875 
-L 4.890625 26.703125 
+" id="DejaVuSans-48"/>
+        <path d="M 10.6875 12.40625 
+L 21 12.40625 
+L 21 0 
+L 10.6875 0 
 z
-" id="DejaVuSans-52"/>
+" id="DejaVuSans-46"/>
        </defs>
        <use xlink:href="#DejaVuSans-48"/>
        <use x="63.623047" xlink:href="#DejaVuSans-46"/>
-       <use x="95.410156" xlink:href="#DejaVuSans-53"/>
-       <use x="159.033203" xlink:href="#DejaVuSans-51"/>
-       <use x="222.65625" xlink:href="#DejaVuSans-52"/>
+       <use x="95.410156" xlink:href="#DejaVuSans-57"/>
+       <use x="159.033203" xlink:href="#DejaVuSans-50"/>
+       <use x="222.65625" xlink:href="#DejaVuSans-55"/>
+       <use x="286.279297" xlink:href="#DejaVuSans-48"/>
       </g>
      </g>
     </g>
     <g id="ytick_2">
-     <g id="line2d_9">
+     <g id="line2d_11">
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="56.50625" xlink:href="#m870e52e0f1" y="193.88198"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="62.86875" xlink:href="#m7944de6ff4" y="163.943249"/>
       </g>
      </g>
-     <g id="text_10">
-      <!-- 0.536 -->
-      <g transform="translate(20.878125 197.681198)scale(0.1 -0.1)">
-       <defs>
-        <path d="M 33.015625 40.375 
-Q 26.375 40.375 22.484375 35.828125 
-Q 18.609375 31.296875 18.609375 23.390625 
-Q 18.609375 15.53125 22.484375 10.953125 
-Q 26.375 6.390625 33.015625 6.390625 
-Q 39.65625 6.390625 43.53125 10.953125 
-Q 47.40625 15.53125 47.40625 23.390625 
-Q 47.40625 31.296875 43.53125 35.828125 
-Q 39.65625 40.375 33.015625 40.375 
-z
-M 52.59375 71.296875 
-L 52.59375 62.3125 
-Q 48.875 64.0625 45.09375 64.984375 
-Q 41.3125 65.921875 37.59375 65.921875 
-Q 27.828125 65.921875 22.671875 59.328125 
-Q 17.53125 52.734375 16.796875 39.40625 
-Q 19.671875 43.65625 24.015625 45.921875 
-Q 28.375 48.1875 33.59375 48.1875 
-Q 44.578125 48.1875 50.953125 41.515625 
-Q 57.328125 34.859375 57.328125 23.390625 
-Q 57.328125 12.15625 50.6875 5.359375 
-Q 44.046875 -1.421875 33.015625 -1.421875 
-Q 20.359375 -1.421875 13.671875 8.265625 
-Q 6.984375 17.96875 6.984375 36.375 
-Q 6.984375 53.65625 15.1875 63.9375 
-Q 23.390625 74.21875 37.203125 74.21875 
-Q 40.921875 74.21875 44.703125 73.484375 
-Q 48.484375 72.75 52.59375 71.296875 
-z
-" id="DejaVuSans-54"/>
-       </defs>
+     <g id="text_12">
+      <!-- 0.9275 -->
+      <g transform="translate(20.878125 167.742468)scale(0.1 -0.1)">
        <use xlink:href="#DejaVuSans-48"/>
        <use x="63.623047" xlink:href="#DejaVuSans-46"/>
-       <use x="95.410156" xlink:href="#DejaVuSans-53"/>
-       <use x="159.033203" xlink:href="#DejaVuSans-51"/>
-       <use x="222.65625" xlink:href="#DejaVuSans-54"/>
+       <use x="95.410156" xlink:href="#DejaVuSans-57"/>
+       <use x="159.033203" xlink:href="#DejaVuSans-50"/>
+       <use x="222.65625" xlink:href="#DejaVuSans-55"/>
+       <use x="286.279297" xlink:href="#DejaVuSans-53"/>
       </g>
      </g>
     </g>
     <g id="ytick_3">
-     <g id="line2d_10">
+     <g id="line2d_12">
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="56.50625" xlink:href="#m870e52e0f1" y="168.735368"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="62.86875" xlink:href="#m7944de6ff4" y="130.989514"/>
       </g>
      </g>
-     <g id="text_11">
-      <!-- 0.538 -->
-      <g transform="translate(20.878125 172.534587)scale(0.1 -0.1)">
-       <defs>
-        <path d="M 31.78125 34.625 
-Q 24.75 34.625 20.71875 30.859375 
-Q 16.703125 27.09375 16.703125 20.515625 
-Q 16.703125 13.921875 20.71875 10.15625 
-Q 24.75 6.390625 31.78125 6.390625 
-Q 38.8125 6.390625 42.859375 10.171875 
-Q 46.921875 13.96875 46.921875 20.515625 
-Q 46.921875 27.09375 42.890625 30.859375 
-Q 38.875 34.625 31.78125 34.625 
-z
-M 21.921875 38.8125 
-Q 15.578125 40.375 12.03125 44.71875 
-Q 8.5 49.078125 8.5 55.328125 
-Q 8.5 64.0625 14.71875 69.140625 
-Q 20.953125 74.21875 31.78125 74.21875 
-Q 42.671875 74.21875 48.875 69.140625 
-Q 55.078125 64.0625 55.078125 55.328125 
-Q 55.078125 49.078125 51.53125 44.71875 
-Q 48 40.375 41.703125 38.8125 
-Q 48.828125 37.15625 52.796875 32.3125 
-Q 56.78125 27.484375 56.78125 20.515625 
-Q 56.78125 9.90625 50.3125 4.234375 
-Q 43.84375 -1.421875 31.78125 -1.421875 
-Q 19.734375 -1.421875 13.25 4.234375 
-Q 6.78125 9.90625 6.78125 20.515625 
-Q 6.78125 27.484375 10.78125 32.3125 
-Q 14.796875 37.15625 21.921875 38.8125 
-z
-M 18.3125 54.390625 
-Q 18.3125 48.734375 21.84375 45.5625 
-Q 25.390625 42.390625 31.78125 42.390625 
-Q 38.140625 42.390625 41.71875 45.5625 
-Q 45.3125 48.734375 45.3125 54.390625 
-Q 45.3125 60.0625 41.71875 63.234375 
-Q 38.140625 66.40625 31.78125 66.40625 
-Q 25.390625 66.40625 21.84375 63.234375 
-Q 18.3125 60.0625 18.3125 54.390625 
-z
-" id="DejaVuSans-56"/>
-       </defs>
+     <g id="text_13">
+      <!-- 0.9280 -->
+      <g transform="translate(20.878125 134.788732)scale(0.1 -0.1)">
        <use xlink:href="#DejaVuSans-48"/>
        <use x="63.623047" xlink:href="#DejaVuSans-46"/>
-       <use x="95.410156" xlink:href="#DejaVuSans-53"/>
-       <use x="159.033203" xlink:href="#DejaVuSans-51"/>
+       <use x="95.410156" xlink:href="#DejaVuSans-57"/>
+       <use x="159.033203" xlink:href="#DejaVuSans-50"/>
        <use x="222.65625" xlink:href="#DejaVuSans-56"/>
+       <use x="286.279297" xlink:href="#DejaVuSans-48"/>
       </g>
      </g>
     </g>
     <g id="ytick_4">
-     <g id="line2d_11">
+     <g id="line2d_13">
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="56.50625" xlink:href="#m870e52e0f1" y="143.588756"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="62.86875" xlink:href="#m7944de6ff4" y="98.035778"/>
       </g>
      </g>
-     <g id="text_12">
-      <!-- 0.540 -->
-      <g transform="translate(20.878125 147.387975)scale(0.1 -0.1)">
+     <g id="text_14">
+      <!-- 0.9285 -->
+      <g transform="translate(20.878125 101.834997)scale(0.1 -0.1)">
        <use xlink:href="#DejaVuSans-48"/>
        <use x="63.623047" xlink:href="#DejaVuSans-46"/>
-       <use x="95.410156" xlink:href="#DejaVuSans-53"/>
-       <use x="159.033203" xlink:href="#DejaVuSans-52"/>
-       <use x="222.65625" xlink:href="#DejaVuSans-48"/>
+       <use x="95.410156" xlink:href="#DejaVuSans-57"/>
+       <use x="159.033203" xlink:href="#DejaVuSans-50"/>
+       <use x="222.65625" xlink:href="#DejaVuSans-56"/>
+       <use x="286.279297" xlink:href="#DejaVuSans-53"/>
       </g>
      </g>
     </g>
     <g id="ytick_5">
-     <g id="line2d_12">
+     <g id="line2d_14">
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="56.50625" xlink:href="#m870e52e0f1" y="118.442144"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="62.86875" xlink:href="#m7944de6ff4" y="65.082043"/>
       </g>
      </g>
-     <g id="text_13">
-      <!-- 0.542 -->
-      <g transform="translate(20.878125 122.241363)scale(0.1 -0.1)">
+     <g id="text_15">
+      <!-- 0.9290 -->
+      <g transform="translate(20.878125 68.881261)scale(0.1 -0.1)">
        <use xlink:href="#DejaVuSans-48"/>
        <use x="63.623047" xlink:href="#DejaVuSans-46"/>
-       <use x="95.410156" xlink:href="#DejaVuSans-53"/>
-       <use x="159.033203" xlink:href="#DejaVuSans-52"/>
-       <use x="222.65625" xlink:href="#DejaVuSans-50"/>
+       <use x="95.410156" xlink:href="#DejaVuSans-57"/>
+       <use x="159.033203" xlink:href="#DejaVuSans-50"/>
+       <use x="222.65625" xlink:href="#DejaVuSans-57"/>
+       <use x="286.279297" xlink:href="#DejaVuSans-48"/>
       </g>
      </g>
     </g>
     <g id="ytick_6">
-     <g id="line2d_13">
-      <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="56.50625" xlink:href="#m870e52e0f1" y="93.295532"/>
-      </g>
-     </g>
-     <g id="text_14">
-      <!-- 0.544 -->
-      <g transform="translate(20.878125 97.094751)scale(0.1 -0.1)">
-       <use xlink:href="#DejaVuSans-48"/>
-       <use x="63.623047" xlink:href="#DejaVuSans-46"/>
-       <use x="95.410156" xlink:href="#DejaVuSans-53"/>
-       <use x="159.033203" xlink:href="#DejaVuSans-52"/>
-       <use x="222.65625" xlink:href="#DejaVuSans-52"/>
-      </g>
-     </g>
-    </g>
-    <g id="ytick_7">
-     <g id="line2d_14">
-      <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="56.50625" xlink:href="#m870e52e0f1" y="68.14892"/>
-      </g>
-     </g>
-     <g id="text_15">
-      <!-- 0.546 -->
-      <g transform="translate(20.878125 71.948139)scale(0.1 -0.1)">
-       <use xlink:href="#DejaVuSans-48"/>
-       <use x="63.623047" xlink:href="#DejaVuSans-46"/>
-       <use x="95.410156" xlink:href="#DejaVuSans-53"/>
-       <use x="159.033203" xlink:href="#DejaVuSans-52"/>
-       <use x="222.65625" xlink:href="#DejaVuSans-54"/>
-      </g>
-     </g>
-    </g>
-    <g id="ytick_8">
      <g id="line2d_15">
       <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="56.50625" xlink:href="#m870e52e0f1" y="43.002308"/>
+       <use style="stroke:#000000;stroke-width:0.8;" x="62.86875" xlink:href="#m7944de6ff4" y="32.128307"/>
       </g>
      </g>
      <g id="text_16">
-      <!-- 0.548 -->
-      <g transform="translate(20.878125 46.801527)scale(0.1 -0.1)">
+      <!-- 0.9295 -->
+      <g transform="translate(20.878125 35.927526)scale(0.1 -0.1)">
        <use xlink:href="#DejaVuSans-48"/>
        <use x="63.623047" xlink:href="#DejaVuSans-46"/>
-       <use x="95.410156" xlink:href="#DejaVuSans-53"/>
-       <use x="159.033203" xlink:href="#DejaVuSans-52"/>
-       <use x="222.65625" xlink:href="#DejaVuSans-56"/>
+       <use x="95.410156" xlink:href="#DejaVuSans-57"/>
+       <use x="159.033203" xlink:href="#DejaVuSans-50"/>
+       <use x="222.65625" xlink:href="#DejaVuSans-57"/>
+       <use x="286.279297" xlink:href="#DejaVuSans-53"/>
       </g>
      </g>
     </g>
-    <g id="ytick_9">
-     <g id="line2d_16">
-      <g>
-       <use style="stroke:#000000;stroke-width:0.8;" x="56.50625" xlink:href="#m870e52e0f1" y="17.855697"/>
-      </g>
-     </g>
-     <g id="text_17">
-      <!-- 0.550 -->
-      <g transform="translate(20.878125 21.654915)scale(0.1 -0.1)">
-       <use xlink:href="#DejaVuSans-48"/>
-       <use x="63.623047" xlink:href="#DejaVuSans-46"/>
-       <use x="95.410156" xlink:href="#DejaVuSans-53"/>
-       <use x="159.033203" xlink:href="#DejaVuSans-53"/>
-       <use x="222.65625" xlink:href="#DejaVuSans-48"/>
-      </g>
-     </g>
-    </g>
-    <g id="text_18">
+    <g id="text_17">
      <!-- Value -->
      <g transform="translate(14.798438 129.65125)rotate(-90)scale(0.1 -0.1)">
       <defs>
@@ -16324,115 +16342,61 @@ z
      </g>
     </g>
    </g>
-   <g id="line2d_17">
-    <path clip-path="url(#p9747af8d71)" d="M 71.724432 65.031254 
-L 88.633523 65.031254 
-L 105.542614 65.031254 
-L 122.451705 65.031254 
-L 139.360795 65.031254 
-L 156.269886 65.031254 
-L 173.178977 65.031254 
-L 190.088068 65.031254 
-L 206.997159 65.031254 
-L 223.90625 65.031254 
-L 240.815341 65.031254 
-L 257.724432 65.031254 
-L 274.633523 65.031254 
-L 291.542614 65.031254 
-L 308.451705 65.031254 
-L 325.360795 65.031254 
-L 342.269886 65.031254 
-L 359.178977 65.031254 
-L 376.088068 65.031254 
+   <g id="line2d_16">
+    <path clip-path="url(#p510c227e2f)" d="M 78.086932 214.756364 
+L 116.132386 44.759154 
+L 154.177841 74.406724 
+L 192.223295 64.522891 
+L 230.26875 26.967469 
+L 268.314205 17.083636 
+L 306.359659 17.083636 
+L 344.405114 21.035598 
+L 382.450568 17.083636 
 " style="fill:none;stroke:#1f77b4;stroke-linecap:square;stroke-width:1.5;"/>
    </g>
-   <g id="line2d_18">
-    <path clip-path="url(#p9747af8d71)" d="M 71.724432 17.083636 
-L 88.633523 17.083636 
-L 105.542614 17.083636 
-L 122.451705 17.083636 
-L 139.360795 17.083636 
-L 156.269886 17.083636 
-L 173.178977 17.083636 
-L 190.088068 17.083636 
-L 206.997159 17.083636 
-L 223.90625 17.083636 
-L 240.815341 17.083636 
-L 257.724432 17.083636 
-L 274.633523 17.083636 
-L 291.542614 17.083636 
-L 308.451705 17.083636 
-L 325.360795 17.083636 
-L 342.269886 17.083636 
-L 359.178977 17.083636 
-L 376.088068 17.083636 
-" style="fill:none;stroke:#ff7f0e;stroke-linecap:square;stroke-width:1.5;"/>
-   </g>
-   <g id="line2d_19">
-    <path clip-path="url(#p9747af8d71)" d="M 71.724432 214.756364 
-L 88.633523 214.756364 
-L 105.542614 214.756364 
-L 122.451705 214.756364 
-L 139.360795 214.756364 
-L 156.269886 214.756364 
-L 173.178977 214.756364 
-L 190.088068 214.756364 
-L 206.997159 214.756364 
-L 223.90625 214.756364 
-L 240.815341 214.756364 
-L 257.724432 214.756364 
-L 274.633523 214.756364 
-L 291.542614 214.756364 
-L 308.451705 214.756364 
-L 325.360795 214.756364 
-L 342.269886 214.756364 
-L 359.178977 214.756364 
-L 376.088068 214.756364 
-" style="fill:none;stroke:#2ca02c;stroke-linecap:square;stroke-width:1.5;"/>
-   </g>
    <g id="patch_3">
-    <path d="M 56.50625 224.64 
-L 56.50625 7.2 
+    <path d="M 62.86875 224.64 
+L 62.86875 7.2 
 " style="fill:none;stroke:#000000;stroke-linecap:square;stroke-linejoin:miter;stroke-width:0.8;"/>
    </g>
    <g id="patch_4">
-    <path d="M 391.30625 224.64 
-L 391.30625 7.2 
+    <path d="M 397.66875 224.64 
+L 397.66875 7.2 
 " style="fill:none;stroke:#000000;stroke-linecap:square;stroke-linejoin:miter;stroke-width:0.8;"/>
    </g>
    <g id="patch_5">
-    <path d="M 56.50625 224.64 
-L 391.30625 224.64 
+    <path d="M 62.86875 224.64 
+L 397.66875 224.64 
 " style="fill:none;stroke:#000000;stroke-linecap:square;stroke-linejoin:miter;stroke-width:0.8;"/>
    </g>
    <g id="patch_6">
-    <path d="M 56.50625 7.2 
-L 391.30625 7.2 
+    <path d="M 62.86875 7.2 
+L 397.66875 7.2 
 " style="fill:none;stroke:#000000;stroke-linecap:square;stroke-linejoin:miter;stroke-width:0.8;"/>
    </g>
    <g id="legend_1">
     <g id="patch_7">
-     <path d="M 307.1875 139.437187 
-L 384.30625 139.437187 
-Q 386.30625 139.437187 386.30625 137.437187 
-L 386.30625 94.402812 
-Q 386.30625 92.402812 384.30625 92.402812 
-L 307.1875 92.402812 
-Q 305.1875 92.402812 305.1875 94.402812 
-L 305.1875 137.437187 
-Q 305.1875 139.437187 307.1875 139.437187 
+     <path d="M 69.86875 29.878125 
+L 146.9875 29.878125 
+Q 148.9875 29.878125 148.9875 27.878125 
+L 148.9875 14.2 
+Q 148.9875 12.2 146.9875 12.2 
+L 69.86875 12.2 
+Q 67.86875 12.2 67.86875 14.2 
+L 67.86875 27.878125 
+Q 67.86875 29.878125 69.86875 29.878125 
 z
 " style="fill:#ffffff;opacity:0.8;stroke:#cccccc;stroke-linejoin:miter;"/>
     </g>
-    <g id="line2d_20">
-     <path d="M 309.1875 100.50125 
-L 329.1875 100.50125 
+    <g id="line2d_17">
+     <path d="M 71.86875 20.298437 
+L 91.86875 20.298437 
 " style="fill:none;stroke:#1f77b4;stroke-linecap:square;stroke-width:1.5;"/>
     </g>
-    <g id="line2d_21"/>
-    <g id="text_19">
+    <g id="line2d_18"/>
+    <g id="text_18">
      <!-- accuracy -->
-     <g transform="translate(337.1875 104.00125)scale(0.1 -0.1)">
+     <g transform="translate(99.86875 23.798437)scale(0.1 -0.1)">
       <defs>
        <path d="M 41.109375 46.296875 
 Q 39.59375 47.171875 37.8125 47.578125 
@@ -16477,112 +16441,12 @@ z
       <use x="391.992188" xlink:href="#DejaVuSans-121"/>
      </g>
     </g>
-    <g id="line2d_22">
-     <path d="M 309.1875 115.179375 
-L 329.1875 115.179375 
-" style="fill:none;stroke:#ff7f0e;stroke-linecap:square;stroke-width:1.5;"/>
-    </g>
-    <g id="line2d_23"/>
-    <g id="text_20">
-     <!-- precision -->
-     <g transform="translate(337.1875 118.679375)scale(0.1 -0.1)">
-      <defs>
-       <path d="M 9.421875 54.6875 
-L 18.40625 54.6875 
-L 18.40625 0 
-L 9.421875 0 
-z
-M 9.421875 75.984375 
-L 18.40625 75.984375 
-L 18.40625 64.59375 
-L 9.421875 64.59375 
-z
-" id="DejaVuSans-105"/>
-       <path d="M 44.28125 53.078125 
-L 44.28125 44.578125 
-Q 40.484375 46.53125 36.375 47.5 
-Q 32.28125 48.484375 27.875 48.484375 
-Q 21.1875 48.484375 17.84375 46.4375 
-Q 14.5 44.390625 14.5 40.28125 
-Q 14.5 37.15625 16.890625 35.375 
-Q 19.28125 33.59375 26.515625 31.984375 
-L 29.59375 31.296875 
-Q 39.15625 29.25 43.1875 25.515625 
-Q 47.21875 21.78125 47.21875 15.09375 
-Q 47.21875 7.46875 41.1875 3.015625 
-Q 35.15625 -1.421875 24.609375 -1.421875 
-Q 20.21875 -1.421875 15.453125 -0.5625 
-Q 10.6875 0.296875 5.421875 2 
-L 5.421875 11.28125 
-Q 10.40625 8.6875 15.234375 7.390625 
-Q 20.0625 6.109375 24.8125 6.109375 
-Q 31.15625 6.109375 34.5625 8.28125 
-Q 37.984375 10.453125 37.984375 14.40625 
-Q 37.984375 18.0625 35.515625 20.015625 
-Q 33.0625 21.96875 24.703125 23.78125 
-L 21.578125 24.515625 
-Q 13.234375 26.265625 9.515625 29.90625 
-Q 5.8125 33.546875 5.8125 39.890625 
-Q 5.8125 47.609375 11.28125 51.796875 
-Q 16.75 56 26.8125 56 
-Q 31.78125 56 36.171875 55.265625 
-Q 40.578125 54.546875 44.28125 53.078125 
-z
-" id="DejaVuSans-115"/>
-       <path d="M 54.890625 33.015625 
-L 54.890625 0 
-L 45.90625 0 
-L 45.90625 32.71875 
-Q 45.90625 40.484375 42.875 44.328125 
-Q 39.84375 48.1875 33.796875 48.1875 
-Q 26.515625 48.1875 22.3125 43.546875 
-Q 18.109375 38.921875 18.109375 30.90625 
-L 18.109375 0 
-L 9.078125 0 
-L 9.078125 54.6875 
-L 18.109375 54.6875 
-L 18.109375 46.1875 
-Q 21.34375 51.125 25.703125 53.5625 
-Q 30.078125 56 35.796875 56 
-Q 45.21875 56 50.046875 50.171875 
-Q 54.890625 44.34375 54.890625 33.015625 
-z
-" id="DejaVuSans-110"/>
-      </defs>
-      <use xlink:href="#DejaVuSans-112"/>
-      <use x="63.476562" xlink:href="#DejaVuSans-114"/>
-      <use x="102.339844" xlink:href="#DejaVuSans-101"/>
-      <use x="163.863281" xlink:href="#DejaVuSans-99"/>
-      <use x="218.84375" xlink:href="#DejaVuSans-105"/>
-      <use x="246.626953" xlink:href="#DejaVuSans-115"/>
-      <use x="298.726562" xlink:href="#DejaVuSans-105"/>
-      <use x="326.509766" xlink:href="#DejaVuSans-111"/>
-      <use x="387.691406" xlink:href="#DejaVuSans-110"/>
-     </g>
-    </g>
-    <g id="line2d_24">
-     <path d="M 309.1875 129.8575 
-L 329.1875 129.8575 
-" style="fill:none;stroke:#2ca02c;stroke-linecap:square;stroke-width:1.5;"/>
-    </g>
-    <g id="line2d_25"/>
-    <g id="text_21">
-     <!-- recall -->
-     <g transform="translate(337.1875 133.3575)scale(0.1 -0.1)">
-      <use xlink:href="#DejaVuSans-114"/>
-      <use x="38.863281" xlink:href="#DejaVuSans-101"/>
-      <use x="100.386719" xlink:href="#DejaVuSans-99"/>
-      <use x="155.367188" xlink:href="#DejaVuSans-97"/>
-      <use x="216.646484" xlink:href="#DejaVuSans-108"/>
-      <use x="244.429688" xlink:href="#DejaVuSans-108"/>
-     </g>
-    </g>
    </g>
   </g>
  </g>
  <defs>
-  <clipPath id="p9747af8d71">
-   <rect height="217.44" width="334.8" x="56.50625" y="7.2"/>
+  <clipPath id="p510c227e2f">
+   <rect height="217.44" width="334.8" x="62.86875" y="7.2"/>
   </clipPath>
  </defs>
 </svg>
@@ -16598,9 +16462,23 @@ L 329.1875 129.8575
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Even tough our machine learning model is not succesful, I am not sure about it is possible to create better model. Our model does not seems to get better with each iteration. Only thing that affects our metrics is classification treshold.</p>
+<p>Since our model is balanced evenly with both teams, we can clearly say that with these features our model is succesfull with 92.95% accuracy.</p>
 
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
 </div>
 </body>
 
